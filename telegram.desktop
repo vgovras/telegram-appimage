@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Telegram
+StartupWMClass=TelegramDesktop
+Comment=Telegram Desktop
+GenericName=Telegram Messenger
+Exec=telegram-desktop %U
+Icon=telegram
+Type=Application
+StartupNotify=true
+Categories=Network;InstantMessaging;
+MimeType=x-scheme-handler/tg;

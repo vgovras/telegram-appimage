@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>com.telegram.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <name>Telegram</name>
+  <summary>Telegram Desktop</summary>
+  <description>
+    <p>Telegram Desktop is a fast and secure messaging application that focuses on speed and security. It offers cloud-based messaging, file sharing, voice and video calls, secret chats with end-to-end encryption, and supports groups with up to 200,000 members.</p>
+    <p>This unofficial AppImage package provides an easy way to install and run Telegram Desktop on Linux systems without requiring system-wide installation.</p>
+  </description>
+  <url type="homepage">https://desktop.telegram.org</url>
+  <launchable type="desktop-id">telegram.desktop</launchable>
+  <provides>
+    <binary>telegram-desktop</binary>
+  </provides>
+  <developer id="com.telegram">
+    <name>Telegram FZ-LLC</name>
+  </developer>
+  <content_rating type="oars-1.1"/>
+</component>
+
