@@ -32,7 +32,7 @@ jobs:
           fi
           
           LATEST=$(./version.sh | tr -d '[:space:]')
-          LAST_TAG=$(gh release view --json tagName -q '.tagName // ""' 2>/dev/null || echo "")
+          LAST_TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName // ""' 2>/dev/null || echo "")
           LAST=$(echo "$LAST_TAG" | sed 's/^v//' | tr -d '[:space:]')
           
           echo "Latest version: $LATEST"

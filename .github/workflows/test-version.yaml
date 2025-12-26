@@ -20,27 +20,34 @@ jobs:
           chmod +x version.sh
           
           echo "Getting latest version from Telegram..."
-          LATEST=$(./version.sh)
-          echo "Latest version: $LATEST"
+          LATEST=$(./version.sh | tr -d '[:space:]')
+          echo "Latest version: '$LATEST'"
           
           echo ""
           echo "Getting last release from GitHub..."
-          LAST=$(gh release view --json tagName -q '.tagName // "v0"' 2>&1)
-          echo "Last release tag: $LAST"
+          LAST_TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName // ""' 2>/dev/null || echo "")
+          echo "Last release tag: '$LAST_TAG'"
           
-          LAST_VERSION=$(echo "$LAST" | sed 's/^v//')
-          echo "Last release version: $LAST_VERSION"
+          if [ -z "$LAST_TAG" ]; then
+            echo "⚠️  No releases found on GitHub"
+            LAST_VERSION=""
+          else
+            LAST_VERSION=$(echo "$LAST_TAG" | sed 's/^v//' | tr -d '[:space:]')
+          fi
+          echo "Last release version: '$LAST_VERSION'"
           
           echo ""
           echo "=== Comparison ==="
-          if [ "$LATEST" = "$LAST_VERSION" ]; then
+          if [ -z "$LAST_VERSION" ]; then
+            echo "⚠️  No releases found - build should RUN (first build)"
+          elif [ "$LATEST" = "$LAST_VERSION" ]; then
             echo "✅ Versions match - build should be SKIPPED"
-            echo "LATEST: $LATEST"
-            echo "LAST:   $LAST_VERSION"
+            echo "LATEST: '$LATEST'"
+            echo "LAST:   '$LAST_VERSION'"
           else
             echo "⚠️  Versions differ - build should RUN"
-            echo "LATEST: $LATEST"
-            echo "LAST:   $LAST_VERSION"
+            echo "LATEST: '$LATEST'"
+            echo "LAST:   '$LAST_VERSION'"
           fi
           
           echo ""
