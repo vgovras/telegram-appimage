@@ -1,0 +1,51 @@
+name: Test Version Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+      
+      - name: Test version check
+        run: |
+          echo "=== Testing version check ==="
+          chmod +x version.sh
+          
+          echo "Getting latest version from Telegram..."
+          LATEST=$(./version.sh)
+          echo "Latest version: $LATEST"
+          
+          echo ""
+          echo "Getting last release from GitHub..."
+          LAST=$(gh release view --json tagName -q '.tagName // "v0"' 2>&1)
+          echo "Last release tag: $LAST"
+          
+          LAST_VERSION=$(echo "$LAST" | sed 's/^v//')
+          echo "Last release version: $LAST_VERSION"
+          
+          echo ""
+          echo "=== Comparison ==="
+          if [ "$LATEST" = "$LAST_VERSION" ]; then
+            echo "✅ Versions match - build should be SKIPPED"
+            echo "LATEST: $LATEST"
+            echo "LAST:   $LAST_VERSION"
+          else
+            echo "⚠️  Versions differ - build should RUN"
+            echo "LATEST: $LATEST"
+            echo "LAST:   $LAST_VERSION"
+          fi
+          
+          echo ""
+          echo "=== Debug info ==="
+          echo "LATEST variable: '$LATEST'"
+          echo "LAST_VERSION variable: '$LAST_VERSION'"
+          echo "Comparison result: $([ "$LATEST" = "$LAST_VERSION" ] && echo "MATCH" || echo "DIFFER")"
+
