@@ -3,6 +3,9 @@ name: Test Version Check
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-24.04
@@ -15,6 +18,8 @@ jobs:
           sudo apt-get install -y curl
       
       - name: Test version check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "=== Testing version check ==="
           chmod +x version.sh
@@ -24,8 +29,9 @@ jobs:
           echo "Latest version: '$LATEST'"
           
           echo ""
-          echo "Getting last release from GitHub..."
-          LAST_TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName // ""' 2>/dev/null || echo "")
+          echo "Getting last release from GitHub (same approach as Telegram)..."
+          REPO="${{ github.repository }}"
+          LAST_TAG=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" | grep -o '"tag_name":"[^"]*"' | head -1 | cut -d'"' -f4 || echo "")
           echo "Last release tag: '$LAST_TAG'"
           
           if [ -z "$LAST_TAG" ]; then

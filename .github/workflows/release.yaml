@@ -32,7 +32,10 @@ jobs:
           fi
           
           LATEST=$(./version.sh | tr -d '[:space:]')
-          LAST_TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName // ""' 2>/dev/null || echo "")
+          
+          # Get last release from GitHub API (same approach as Telegram version check)
+          REPO="${{ github.repository }}"
+          LAST_TAG=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" | grep -o '"tag_name":"[^"]*"' | head -1 | cut -d'"' -f4 || echo "")
           LAST=$(echo "$LAST_TAG" | sed 's/^v//' | tr -d '[:space:]')
           
           echo "Latest version: $LATEST"
