@@ -16,7 +16,7 @@ Unofficial Telegram Desktop AppImage for Linux.
 
 ## Building Locally
 
-1. Install dependencies: `wget`, `tar`
+1. Install dependencies: `wget`, `curl`, `tar`
 2. Download `linuxdeploy-x86_64.AppImage` and place it in the repository root
 3. Run:
    ```bash

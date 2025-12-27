@@ -37,6 +37,7 @@ jobs:
         if: steps.version.outputs.skip != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           sudo apt-get update && sudo apt-get install -y zsync
           chmod +x build.sh version.sh

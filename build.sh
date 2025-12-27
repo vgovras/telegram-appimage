@@ -5,26 +5,26 @@ chmod +x linuxdeploy-x86_64.AppImage
 
 rm -rf AppDir Telegram
 
-# Download Telegram Desktop
 wget -c "https://telegram.org/dl/desktop/linux" --trust-server-names
 tar xf tsetup.*.tar.xz
 
-# Extract version from tarball filename
 VERSION=$(ls tsetup.*.tar.xz | sed 's|tsetup.||;s|.tar.xz||')
 echo "$VERSION" > VERSION
 
-# Download icon
-wget -c https://github.com/balbeko/telegram-desktop-bin-aur/raw/master/telegram-desktop-bin.png -O telegram.png || \
-  wget -c https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/art/icon256.png -O telegram.png
+wget -q https://github.com/balbeko/telegram-desktop-bin-aur/raw/master/telegram-desktop-bin.png -O telegram.png 2>/dev/null || \
+wget -q https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/art/icon256.png -O telegram.png
 
-# Prepare AppDir
 mkdir -p AppDir/usr/bin
 cp Telegram/Telegram AppDir/usr/bin/telegram-desktop
 
 mkdir -p AppDir/usr/share/metainfo
 cp com.telegram.desktop.appdata.xml AppDir/usr/share/metainfo/
 
-export LDAI_UPDATE_INFORMATION="gh-releases-zsync|vgovras|telegram-appimage|latest|Telegram-*.AppImage.zsync"
+REPO="${GITHUB_REPOSITORY:-vgovras/telegram-appimage}"
+ZSYNC_NAME="Telegram-${VERSION}-x86_64.AppImage.zsync"
+UPDATE_URL="zsync|https://github.com/${REPO}/releases/download/v${VERSION}/${ZSYNC_NAME}"
+
+export LDAI_UPDATE_INFORMATION="$UPDATE_URL"
 NO_STRIP=1 LINUXDEPLOY_OUTPUT_VERSION=$VERSION ./linuxdeploy-x86_64.AppImage \
   --appdir AppDir \
   --executable AppDir/usr/bin/telegram-desktop \
